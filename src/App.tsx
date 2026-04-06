@@ -116,7 +116,20 @@ const Hero = () => {
                 className="w-full h-full object-contain"
               />
             </div>
-      
+                  
+            <div className="absolute top-10 right-10 glass p-4 rounded-2xl shadow-lg">
+              <Activity className="text-brand-600 mb-1" size={20} />
+              <div className="text-[10px] font-bold text-slate-400 uppercase">Real-time</div>
+              <div className="text-sm font-bold text-slate-900">Monitoring</div>
+            </div>
+            
+            <div className="absolute bottom-10 left-10 glass p-4 rounded-2xl shadow-lg">
+              <ShieldAlert className="text-emerald-600 mb-1" size={20} />
+              <div className="text-[10px] font-bold text-slate-400 uppercase">High</div>
+              <div className="text-sm font-bold text-slate-900">Sensitivity</div>
+            </div>
+          </div>
+          
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-brand-200 rounded-full opacity-20 animate-[spin_30s_linear_infinite]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-brand-100 rounded-full opacity-10 animate-[spin_45s_linear_infinite_reverse]" />
         </motion.div>
