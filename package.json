@@ -1,7 +1,8 @@
 {
-  "name": "react-example",
+  "name": "condensense",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "An LLPS-Based Fluorescent Biosensor for Early-Stage Pharmaceutical Toxicity Detection",
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
@@ -13,7 +14,6 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^1.29.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "dotenv": "^17.2.3",

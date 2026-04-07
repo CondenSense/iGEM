@@ -1,7 +1,6 @@
 import { motion } from "motion/react";
 import { 
   Beaker, 
-  ShieldAlert, 
   Zap, 
   Users, 
   ArrowRight, 
@@ -9,7 +8,6 @@ import {
   Github, 
   Mail,
   Microscope,
-  Activity,
   AlertTriangle,
   TrendingDown,
   CheckCircle2,
@@ -115,18 +113,6 @@ const Hero = () => {
                 playsInline
                 className="w-full h-full object-contain"
               />
-            </div>
-                  
-            <div className="absolute top-10 right-10 glass p-4 rounded-2xl shadow-lg">
-              <Activity className="text-brand-600 mb-1" size={20} />
-              <div className="text-[10px] font-bold text-slate-400 uppercase">Real-time</div>
-              <div className="text-sm font-bold text-slate-900">Monitoring</div>
-            </div>
-            
-            <div className="absolute bottom-10 left-10 glass p-4 rounded-2xl shadow-lg">
-              <ShieldAlert className="text-emerald-600 mb-1" size={20} />
-              <div className="text-[10px] font-bold text-slate-400 uppercase">High</div>
-              <div className="text-sm font-bold text-slate-900">Sensitivity</div>
             </div>
           </div>
           
