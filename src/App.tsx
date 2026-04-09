@@ -11,7 +11,9 @@ import {
   AlertTriangle,
   TrendingDown,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Activity,
+  ShieldAlert
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
