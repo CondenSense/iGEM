@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { 
   Beaker, 
   Zap, 
@@ -13,7 +13,9 @@ import {
   CheckCircle2,
   XCircle,
   Activity,
-  ShieldAlert
+  ShieldAlert,
+  Menu,
+  X
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -21,6 +23,7 @@ import { useState, useEffect } from "react";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -28,33 +31,93 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  const navLinks = ["Purpose", "Need", "Technology", "Team"];
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "glass py-3 shadow-sm" : "bg-transparent py-6"}`}>
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <a href="#" className="flex items-center gap-3 group">
-          <img src="logo2.png" alt="CondenSense Logo" className="h-10 w-auto group-hover:scale-110 transition-transform" />
-        </a>
-        
-        <div className="hidden md:flex items-center gap-8">
-          {["Purpose", "Need", "Technology", "Team"].map((item) => (
-            <a 
-              key={item} 
-              href={`#${item.toLowerCase()}`} 
-              className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
-            >
-              {item}
-            </a>
-          ))}
-          <a 
-            href="https://www.instagram.com/condense.sense/" 
-            target="_blank"
-            className="bg-brand-900 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-800 transition-all hover:shadow-lg active:scale-95"
-          >
-            Follow Us
+    <>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isOpen ? "glass py-3 shadow-sm" : "bg-transparent py-6"}`}>
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+          <a href="#" className="flex items-center gap-3 group" onClick={() => setIsOpen(false)}>
+            <img src="logo2.png" alt="CondenSense Logo" className="h-10 w-auto group-hover:scale-110 transition-transform" />
           </a>
+          
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((item) => (
+              <a 
+                key={item} 
+                href={`#${item.toLowerCase()}`} 
+                className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors"
+              >
+                {item}
+              </a>
+            ))}
+            <a 
+              href="https://www.instagram.com/condense.sense/" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-brand-900 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-800 transition-all hover:shadow-lg active:scale-95"
+            >
+              Follow Us
+            </a>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex md:hidden items-center justify-center p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors focus:outline-none"
+            aria-label="Toggle navigation menu"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Mobile Drawer Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "100vh" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="fixed inset-0 z-40 bg-white/98 backdrop-blur-lg pt-24 px-6 flex flex-col md:hidden overflow-hidden"
+          >
+            <div className="flex flex-col gap-6 items-center text-center mt-8">
+              {navLinks.map((item) => (
+                <a 
+                  key={item} 
+                  href={`#${item.toLowerCase()}`} 
+                  onClick={() => setIsOpen(false)}
+                  className="text-2xl font-semibold text-slate-800 hover:text-brand-600 transition-colors py-2 w-full"
+                >
+                  {item}
+                </a>
+              ))}
+              <a 
+                href="https://www.instagram.com/condense.sense/" 
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+                className="bg-brand-900 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-brand-800 transition-all active:scale-95 mt-4 w-full max-w-xs shadow-lg shadow-brand-100"
+              >
+                Follow Us
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
@@ -71,13 +134,7 @@ const Hero = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 border border-brand-200 text-brand-700 text-xs font-bold uppercase tracking-wider mb-6">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
-            </span>
-            iGEM 2026 Project
-          </div>
+
           
           <h1 className="text-5xl md:text-7xl font-display font-black text-slate-900 leading-[1.1] mb-6">
             Detect Drug Toxicity <br />
@@ -129,7 +186,7 @@ const Hero = () => {
 const Stats = () => {
   const stats = [
     { label: "Drug failures from toxicity in late-stage trials", value: "30%", icon: AlertTriangle },
-    { label: "Students from University of Edinburgh", value: "13", icon: Users },
+    { label: "Students from University of Edinburgh", value: "12", icon: Users },
     { label: "Biological chassis tested", value: "2", icon: Beaker },
     { label: "Weeks of experimental protocol", value: "12", icon: Activity },
   ];
@@ -392,19 +449,101 @@ const Technology = () => {
   );
 };
 
+interface TeamMember {
+  name: string;
+  image: string;
+  bio: string;
+  quote: string;
+}
+
+const TEAM_MEMBERS: TeamMember[] = [
+  {
+    name: "Maciej",
+    image: "team/maciej.jpg",
+    bio: "Maciej is a biotechnology student interested in molecular biology, machine learning, and other emerging technologies to solve global issues. In his spare time, he plays chess and travels.",
+    quote: "Condensense is an exciting project that combines my passions for biology and real-world applications by designing biological models to solve real-world problems and improve people’s lives. I am contributing to it as part of the funding team."
+  },
+  {
+    name: "Emily",
+    image: "team/emily.png",
+    bio: "A BSc Molecular Biology student, Emily pairs her scientific pursuits with a creative passion for music whenever she steps away from the lab bench.",
+    quote: "I’m working as part of the Condensense methodology team, conducting research and helping with writing and planning laboratory procedures."
+  },
+  {
+    name: "Max",
+    image: "team/max.png",
+    bio: "From experimenting with his first microscope at age four to leading his innovative research team at iGEM, Max has been passionate bioscientist. A British Biology Olympiad award winner, he is now reading Biochemistry at the University of Edinburgh.",
+    quote: "What excites me most about CondenSense is the opportunity to harness biology’s own machinery to create testing methods that outperform conventional approaches."
+  },
+  {
+    name: "Marcel",
+    image: "team/marcel.png",
+    bio: "Marcel studies Neuroscience at the University of Edinburgh, where his academic focus centers on cognitive neuroscience. Driven by the intersection of brain science and innovation, he is currently channeling his background into building a startup.",
+    quote: "I am contributing to the team's methodology, ensuring that all research protocols are scientifically sound."
+  },
+  {
+    name: "Collins",
+    image: "team/collins.png",
+    bio: "A third-year Neuroscience student at the University of Edinburgh, Collins pairs his academic focus with a keen eye for photography, disciplined Judo practice, and a love for horror and gaming. He uses his trilingual skills to build connections and friends.",
+    quote: "Although no videogame will ever have as many sidetasks as I do, hence why I do bit of mix of things for the project, from the fundraising, lab methodology, video/photo taking for the social medias and running the half marathon."
+  },
+  {
+    name: "Duc",
+    image: "team/duc.jpg",
+    bio: "Bridging the gap between science and public outreach, Duc runs funding and media.",
+    quote: "By tracking instant condensate formation under stress, we’re creating a much faster alternative to traditional drug toxicity testing."
+  },
+  {
+    name: "Olivia",
+    image: "team/olivia.png",
+    bio: "Olivia reads Biochemistry at the University of Edinburgh. An avid athlete who thrives on pushing her limits, she is currently organising her own half marathon.",
+    quote: "I help manage our social media, support fundraising efforts and will be helping with lab work over the summer."
+  },
+  {
+    name: "Kegan",
+    image: "team/kegan.png",
+    bio: "Kegan is a neuroscience student who is interested in emerging technologies and its global impact. His interests include playing the guitar and learning languages.",
+    quote: "For the project, I am involved in outreach such as building relationships with experts within the field and fundraising. Additionally, I am also involved in the dry lab aspect of the project."
+  },
+  {
+    name: "Parnian",
+    image: "team/parnian.png",
+    bio: "A pharmacy student and lifeguard, Parnian loves challenging herself and has solo-travel through four countries in Asia. She enjoys learning new languages and cultures, and is currently learning Azerbaijani!",
+    quote: "Cells already have a survival trick: under stress, their proteins bunch into tiny liquid droplets, like oil beading in water, but alive. CondenSense hijacks that ancient reflex and wires it to glow, so a drug's toxicity reveals itself the instant a cell feels it. We didn't invent the alarm. we taught it to talk."
+  },
+  {
+    name: "Arya",
+    image: "team/arya.png",
+    bio: "Outside the lab, Arya speaks four languages, happily argues logic for free, and is slowly relearning the violin. He also admits to losing money at poker in the noble name of \"studying game theory.\" Ultimately, Arya genuinely believes the coolest engineering is the kind cells were already pulling off long before we showed up.",
+    quote: "plenty of drugs pass every test, then get yanked off shelves for damaging the heart. toxicity is a top reason drugs get banned. CondenSense makes cells flash green the instant a drug stresses them. We turn that into a molecular canary that warns us in a dish, not in you."
+  },
+  {
+    name: "Anan",
+    image: "team/anan.jpg",
+    bio: "Anan is a musician, motorcyclist, and ESRA Biology Department Head, reading Biomedical Sciences. His research spans assay development, novel C. elegans genetic discoveries, and in-silico modeling. He is the developer of ChromosomeGuessr and a proud survivor of a 7-hour “accidental” loop of Crazy Frog while writing an essay.",
+    quote: "I oversee international expert connections, the website, dry-lab, an upcoming symposium, and instagram posts."
+  },
+  {
+    name: "Nico",
+    image: "team/nico.png",
+    bio: "Accelerating his academic journey as a direct-entry student, Nico is currently in his third year reading Biochemistry at the University of Edinburgh.",
+    quote: "Did you know that the same cellular droplets that have been implicated in diseases like ALS and Alzheimer’s may also help us build better toxicity tests?"
+  }
+];
+
 const Team = () => {
   return (
     <section id="team" className="py-32 bg-slate-50">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="bg-white rounded-[4rem] p-12 md:p-20 border border-slate-100 shadow-xl overflow-hidden relative">
+        <div className="bg-white rounded-3xl p-6 md:rounded-[4rem] md:p-16 border border-slate-100 shadow-xl overflow-hidden relative">
           <div className="absolute top-0 right-0 w-64 h-64 bg-brand-100/50 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2" />
           
           <div className="grid lg:grid-cols-2 gap-16 items-center relative z-10">
             <div>
               <h2 className="text-sm font-bold text-brand-600 uppercase tracking-widest mb-4">Our Team</h2>
-              <h3 className="text-4xl md:text-5xl font-display font-black text-slate-900 mb-8">Thirteen Minds, One Mission</h3>
+              <h3 className="text-4xl md:text-5xl font-display font-black text-slate-900 mb-8">Twelve Minds, One Mission</h3>
               <p className="text-lg text-slate-600 mb-10 leading-relaxed">
-                We are a group of 13 students from the University of Edinburgh, united by our passion for synthetic biology and its potential to solve real-world problems.
+                We are a group of 12 students from the University of Edinburgh, united by our passion for synthetic biology and its potential to solve real-world problems.
               </p>
               
               <div className="flex items-center gap-6 p-6 bg-slate-50 rounded-3xl border border-slate-100">
@@ -423,29 +562,65 @@ const Team = () => {
                 <motion.div 
                   animate={{ rotate: 360 }}
                   transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                  className="w-64 h-64 md:w-80 md:h-80 border-2 border-dashed border-brand-200 rounded-full"
+                  className="w-48 h-48 md:w-64 md:h-64 border-2 border-dashed border-brand-200 rounded-full"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <div className="text-8xl md:text-9xl font-display font-black text-gradient">13</div>
-                    <div className="text-lg font-bold text-slate-400 uppercase tracking-widest">Students</div>
+                    <div className="text-6xl md:text-7xl font-display font-black text-gradient">12</div>
+                    <div className="text-sm md:text-base font-bold text-slate-400 uppercase tracking-widest">Students</div>
                   </div>
                 </div>
-                
-                {[0, 90, 180, 270].map((deg, i) => (
-                  <motion.div 
-                    key={i}
-                    animate={{ scale: [1, 1.5, 1] }}
-                    transition={{ duration: 2, delay: i * 0.5, repeat: Infinity }}
-                    className="absolute w-4 h-4 bg-brand-500 rounded-full shadow-lg shadow-brand-200"
-                    style={{
-                      top: '50%',
-                      left: '50%',
-                      transform: `translate(-50%, -50%) rotate(${deg}deg) translateY(-160px)`
-                    }}
-                  />
-                ))}
               </div>
+            </div>
+          </div>
+
+          {/* Meet the Team Grid */}
+          <div className="mt-20 border-t border-slate-100 pt-16 relative z-10">
+            <h3 className="text-3xl md:text-4xl font-display font-black text-slate-900 mb-12 text-center">Meet the Team</h3>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {TEAM_MEMBERS.map((member, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.5, delay: (idx % 3) * 0.1 }}
+                  whileHover={{ y: -6 }}
+                  className="bg-slate-50/50 hover:bg-white border border-slate-100 hover:border-brand-200 rounded-3xl p-6 transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between group relative overflow-hidden"
+                >
+                  <div>
+                    {/* Image Container */}
+                    <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-slate-100 relative">
+                      <img 
+                        src={member.image} 
+                        alt={member.name} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    
+                    {/* Header Details */}
+                    <h4 className="text-2xl font-display font-bold text-slate-900 mb-1 group-hover:text-brand-600 transition-colors">{member.name}</h4>
+                    <div className="mb-4"></div>
+                    
+                    {/* Biography */}
+                    <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                      {member.bio}
+                    </p>
+                  </div>
+                  
+                  {/* Quote (Speech bubble style) */}
+                  {member.quote && (
+                    <div className="bg-brand-50/50 border-l-4 border-brand-500 rounded-r-xl p-4 mt-auto">
+                      <p className="text-brand-900 text-xs italic leading-relaxed">
+                        “{member.quote}”
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
